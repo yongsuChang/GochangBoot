@@ -14,8 +14,9 @@ public final class PaginationUtils {
 
     public static <ApiResponse> Header<List<ApiResponse>> getPaginationHeader(
             Page<?> pageElement, BaseService baseService){
+        List<ApiResponse> apiResponseList = baseService.getResponseList(pageElement);
         return Header.OK(
-                baseService.getResponseList(pageElement),
+                apiResponseList,
                 buildPaginationByPageElement(pageElement)
         );
     }
