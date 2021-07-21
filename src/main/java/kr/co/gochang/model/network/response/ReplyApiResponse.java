@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReplyApiResponse {
 
-    private String contentNumber;
-
-    private String number;
+    private Long id;
 
     private String writeDate;
 
@@ -24,4 +22,6 @@ public class ReplyApiResponse {
     private String isReReply;
 
     private String indexInContent;
+
+    private Long contentId;
 }

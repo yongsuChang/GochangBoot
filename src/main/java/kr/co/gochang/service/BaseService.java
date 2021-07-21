@@ -3,6 +3,7 @@ package kr.co.gochang.service;
 import kr.co.gochang.interfaces.CrudInterface;
 import kr.co.gochang.model.network.Header;
 import kr.co.gochang.model.network.Pagination;
+import kr.co.gochang.model.network.response.ContentApiResponse;
 import kr.co.gochang.utils.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,4 +34,5 @@ public abstract class BaseService<Request, Response, Entity> implements CrudInte
                 .map(this::response)
                 .collect(Collectors.toList());
     }
+
 }

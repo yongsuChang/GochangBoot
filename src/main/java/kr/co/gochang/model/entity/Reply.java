@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "gochangreply")
-@Table(name = "gochangreply")
+@Entity(name = "gochangreplyboot")
+@Table(name = "gochangreplyboot")
 @Builder
 @Accessors(chain = true)
 public class Reply {
@@ -37,7 +37,7 @@ public class Reply {
     private String indexInContent;
 
     // 원래는 @ManyToOne 등으로 연결 되어야
-    @Column(name = "contentnumber")
-    private String contentNumber;
+    @Column(name = "contentid")
+    private Long contentId;
 
 }
