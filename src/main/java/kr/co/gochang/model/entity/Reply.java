@@ -11,9 +11,33 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "connector")
-@Table(name = "connector")
+@Entity(name = "gochangreply")
+@Table(name = "gochangreply")
 @Builder
 @Accessors(chain = true)
 public class Reply {
+
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "writedate")
+    private String writeDate;
+
+    @Column(name = "writer")
+    private String writer;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "isrereply")
+    private String isReReply;
+
+    @Column(name = "indexincontent")
+    private String indexInContent;
+
+    // 원래는 @ManyToOne 등으로 연결 되어야
+    @Column(name = "contentnumber")
+    private String contentNumber;
+
 }
