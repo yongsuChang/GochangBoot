@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "gochangreplyboot")
-@Table(name = "gochangreplyboot")
+@Entity(name = "reply")
+@Table(name = "reply")
 @Builder
 @Accessors(chain = true)
 public class Reply {

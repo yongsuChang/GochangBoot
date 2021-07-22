@@ -11,43 +11,42 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "gochangcontent")
-@Table(name = "gochangcontent")
+@Entity(name = "content")
+@Table(name = "content")
 @Builder
 @Accessors(chain = true)
 public class Content {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GOCHANGCONTENT_SEQ_GENERATOR")
-    @SequenceGenerator(sequenceName = "GOCHANGCONTENT_SEQ", name="GOCHANGCONTENT_SEQ_GENERATOR", allocationSize = 1)
-    @Column(name = "contentindex")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "contentnumber")
+    @Column(name = "number")
     private String number;
 
-    @Column(name = "contenttitle")
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "contentwritedate")
+    @Column(name = "writedate")
     private String writeDate;
 
-    @Column(name = "contentwriter")
+    @Column(name = "writer")
     private String writer;
 
-    @Column(name = "contentviewcount")
+    @Column(name = "count")
     private String count;
 
-    @Column(name = "contentrecommend")
+    @Column(name = "recommend")
     private String recommend;
 
-    @Column(name = "contentreplynumber")
+    @Column(name = "replycount")
     private String replyCount;
 
-    @Column(name = "contentcontent")
+    @Column(name = "content")
     private String content;
 
-    @Column(name = "contentpicture")
+    @Column(name = "picture")
     private String picture;
 
 }
