@@ -1,6 +1,8 @@
 package kr.co.gochang.service.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import kr.co.gochang.model.entity.Content;
 import kr.co.gochang.model.entity.Reply;
 import kr.co.gochang.model.enumclass.SearchType;
@@ -16,6 +18,7 @@ import kr.co.gochang.utils.SearchTypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -99,5 +102,9 @@ public class ContentApiLogicService extends BaseService<ContentApiRequest, Conte
             }
         }
         return PaginationUtils.getPaginationHeader(contentPage, this);
+    }
+
+    public List<Content> readAll(Sort sort) {
+        return baseRepository.findAll(sort);
     }
 }

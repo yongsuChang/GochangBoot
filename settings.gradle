@@ -1,1 +1,4 @@
 rootProject.name = 'gochang'
+include 'gochang-migration-api'
+include 'gochang-common-api'
+

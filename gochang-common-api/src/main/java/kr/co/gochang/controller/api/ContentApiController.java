@@ -27,4 +27,15 @@ public class ContentApiController extends CrudController<ContentApiRequest, Cont
         ContentApiLogicService contentApiLogicService = (ContentApiLogicService) baseService;
         return contentApiLogicService.searchBoard(pageable, searchTarget, searchWord);
     }
+
+    @GetMapping("/readAll")
+    public List<Content> readAll() {
+        ContentApiLogicService contentApiLogicService = (ContentApiLogicService) baseService;
+        Sort sort = sortByIdAsc();
+        return contentApiLogicService.readAll(sort);
+    }
+
+    private Sort sortByIdAsc(){
+        return Sort.by(Sort.Direction.ASC, "id");
+    }
 }
