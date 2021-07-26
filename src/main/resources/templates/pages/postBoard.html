@@ -23,10 +23,10 @@
             v-bind:dto="dto" v-on:click="onRowClick(dto)">
             <td>{{dto.id}}</td>
             <td>{{dto.title}} [{{dto.reply_count}}]
-<!--                <img v-if="{{dto.picture == '1'}}" src="/lib/img/attached.png" width="20" height="20">-->
+                <img v-if="dto.picture == '1'" src="/lib/img/attached.png" width="20" height="20">
             </td>
             <td>{{dto.writer}}</td>
-            <td>{{dto.writeDate}}</td>
+            <td>{{dto.write_date}}</td>
             <td>{{dto.count}}</td>
             <td>{{dto.recommend}}</td>
         </tr>
