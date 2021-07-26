@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<!-- 게시판 시작 -->
+<div id="table_part" th:fragment="postBoard">
+    <table class="table table-hover text-center">
+        <thead style="background-color: #a0d2ba">
+        <tr role="row">
+            <th scope="col" style="text-align:center">글 번호</th>
+            <th scope="col" style="text-align:center">제목</th>
+            <th scope="col" style="text-align:center">작성자</th>
+            <th scope="col" style="text-align:center">작성일</th>
+            <th scope="col" style="text-align:center">조회수</th>
+            <th scope="col" style="text-align:center">추천수</th>
+        </tr>
+        </thead>
+        <tbody id="itemList">
+        <tr role="row" class="odd" v-for="dto in itemList" id="readPostForm" style="cursor: pointer;"
+            v-bind:dto="dto" v-on:click="onRowClick(dto)">
+            <td>{{dto.id}}</td>
+            <td>{{dto.title}} [{{dto.reply_count}}]
+<!--                <img v-if="{{dto.picture == '1'}}" src="/lib/img/attached.png" width="20" height="20">-->
+            </td>
+            <td>{{dto.writer}}</td>
+            <td>{{dto.writeDate}}</td>
+            <td>{{dto.count}}</td>
+            <td>{{dto.recommend}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <script src="/app/postBoard.js"></script>
+</div>
+<!-- 게시판 끝 -->
+</html>
