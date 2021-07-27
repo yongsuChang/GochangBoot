@@ -12,12 +12,11 @@
     };
 
 
-    // 페이지 정보
-    var showPage = new Vue({
-        el : '#showPage',
+    // 총 게시글 정보
+    var totalElements = new Vue({
+        el : '#totalElements',
         data : {
             totalElements : {},
-            currentPage:{}
         }
     });
 
@@ -44,17 +43,27 @@
         },
         methods: {
             indexClick: function (id) {
-                searchStart(id-1)
+                searchStart(id-1);
             },
-            previousClick:function () {
+            previousClick: function () {
                 if(pagination.current_page !== 0){
                     searchStart(pagination.current_page-1);
                 }
             },
-            nextClick:function () {
+            nextClick: function () {
 
                 if(pagination.current_page !== pagination.total_pages-1){
                     searchStart(pagination.current_page+1);
+                }
+            },
+            firstPageClick: function () {
+                if(pagination.current_page !== 0){
+                    searchStart(0);
+                }
+            },
+            lastPageClick: function () {
+                if(pagination.current_page !== pagination.total_pages-1){
+                    searchStart(pagination.total_pages-1);
                 }
             }
         },
@@ -86,28 +95,31 @@
             pagination = response.pagination;
 
 
-            //전체 페이지
-            showPage.totalElements = pagination.current_elements;
-            showPage.currentPage = pagination.current_page+1;
+            // 총 게시글
+            totalElements.totalElements = pagination.total_elements;
 
 
             // 검색 데이터
             itemList.itemList = response.data;
 
 
-            // 이전버튼
+            // 이전 버튼, 맨앞 버튼
             if(pagination.current_page === 0){
                 $('#previousBtn').addClass("disabled")
+                $('#firstPageBtn').addClass("disabled")
             }else{
                 $('#previousBtn').removeClass("disabled")
+                $('#firstPageBtn').removeClass("disabled")
             }
 
 
-            // 다음버튼
+            // 다음 버튼, 맨뒤 버튼
             if(pagination.current_page === pagination.total_pages-1){
                 $('#nextBtn').addClass("disabled")
+                $('#lastPageBtn').addClass("disabled")
             }else{
                 $('#nextBtn').removeClass("disabled")
+                $('#lastPageBtn').removeClass("disabled")
             }
 
             // 페이징 버튼 처리
@@ -122,6 +134,7 @@
 
             // 페이지 버튼 셋팅
             pageBtnList.btnList = indexBtn;
+            console.log("pageBtnList.btnList : " + pageBtnList.btnList);
 
 
             // 색상처리
