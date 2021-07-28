@@ -134,7 +134,6 @@
 
             // 페이지 버튼 셋팅
             pageBtnList.btnList = indexBtn;
-            console.log("pageBtnList.btnList : " + pageBtnList.btnList);
 
 
             // 색상처리

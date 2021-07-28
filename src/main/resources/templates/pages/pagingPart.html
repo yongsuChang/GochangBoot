@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<!-- Paging Start -->
+<div id="pagingPart" th:fragment="pagingPart">
+    <div style="display: block; text-align: center;">
+        <div class="dataTables_paginate paging_simple_numbers" id="pageBtn">
+            <ul class="pagination">
+                <li class="paginate_button" id="firstPageBtn">
+                    <a href="javascript:;" v-on:click="firstPageClick()">맨앞</a>
+                </li>
+                <li class="paginate_button previous" id="previousBtn">
+                    <a href="javascript:;" v-on:click="previousClick()">이전</a>
+                </li>
+
+                <li class="paginate_button" v-for="btn in btnList" v-bind:btn_id="btn" v-on:click="indexClick(btn)">
+                    <a href="javascript:;" aria-controls="example2">{{btn}}</a>
+                </li>
+                <li class="paginate_button next" id="nextBtn">
+                    <a href="javascript:;" v-on:click="nextClick()">다음</a>
+                </li>
+                <li class="paginate_button" id="lastPageBtn">
+                    <a href="javascript:;" v-on:click="lastPageClick()">맨뒤</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Paging End -->
+
+</html>
