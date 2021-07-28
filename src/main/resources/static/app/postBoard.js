@@ -1,7 +1,8 @@
 (function ($) {
 
-    var maxBtnSize = 10;              // 검색 하단 최대 범위
-    var indexBtn = [];               // 인덱스 버튼
+    var maxBtnSize = 10;            // 검색 하단 최대 범위
+    var indexBtn = [];              // 인덱스 버튼
+    var elementPerPage = 15;        // 페이지당 데이터수
 
     // 페이징 처리 데이터
     var pagination = {
@@ -10,6 +11,16 @@
         current_page :  0,          // 현재 페이지수
         current_elements : 0        // 현재 데이터수
     };
+
+    var elementPerPageMethod = new Vue({
+        el : '#elementPerPage',
+        methods: {
+            changeSelection: function() {
+                elementPerPage = document.getElementById('elementPerPage').value;
+                searchStart(0);
+            }
+        }
+    })
 
 
     // 총 게시글 정보
@@ -87,7 +98,8 @@
 
     function searchStart(index) {
         console.log("call index : "+index);
-        $.get("/api/content?page="+index, function (response) {
+        $.get("/api/content?page="+index+"&size="+elementPerPage,
+            function (response) {
 
             /* 데이터 셋팅 */
             // 페이징 처리 데이터

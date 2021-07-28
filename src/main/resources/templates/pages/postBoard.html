@@ -9,12 +9,11 @@
     <h5 id="totalElements" style="float:left;">총 {{totalElements}} 개의 글이 있습니다.</h5>
     <!-- Option Start -->
     <div style="float: right;">
-        <select id="countPerPage" name="sel" onchange="selChange()">
-
+        <select id="elementPerPage" name="sel" v-on:change="changeSelection()">
             <option value="10">
             10개씩 보기
             </option>
-            <option value="15">
+            <option value="15" selected>
             15개씩 보기
             </option>
             <option value="20">
