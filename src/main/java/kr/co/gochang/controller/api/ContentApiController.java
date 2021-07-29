@@ -22,9 +22,9 @@ public class ContentApiController extends CrudController<ContentApiRequest, Cont
             @PageableDefault(sort="id", direction= Sort.Direction.DESC, size=15)
                     Pageable pageable,
             // TODO: searchType으로 바꿀 것
-            @RequestParam(value = "searchTarget", defaultValue = "") String searchTarget,
+            @RequestParam(value = "searchType", defaultValue = "") String searchType,
             @RequestParam(value = "searchWord", defaultValue = "") String searchWord) {
         ContentApiLogicService contentApiLogicService = (ContentApiLogicService) baseService;
-        return contentApiLogicService.searchBoard(pageable, searchTarget, searchWord);
+        return contentApiLogicService.searchBoard(pageable, searchType, searchWord);
     }
 }
