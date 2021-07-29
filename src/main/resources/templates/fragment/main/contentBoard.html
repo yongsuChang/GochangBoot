@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org/"
       xmlns:v-on="http://www.w3.org/1999/xhtml">
 
-<div id="postBoard" th:fragment="postBoard">
+<div id="contentBoard" th:fragment="contentBoard">
     <h5 id="totalElements" style="float:left;">총 {{totalElements}} 개의 글이 있습니다.</h5>
     <!-- Option Start -->
     <div style="float: right;">
@@ -25,7 +25,7 @@
     </div>
     <!-- Option End -->
     <!-- Board Start -->
-    <div id="table_part" th:fragment="postBoard">
+    <div id="table_part">
         <table class="table table-hover text-center">
             <thead style="background-color: #a0d2ba">
             <tr role="row">
@@ -38,7 +38,7 @@
             </tr>
             </thead>
             <tbody id="itemList">
-            <tr role="row" class="odd" v-for="dto in itemList" id="readPostForm"
+            <tr role="row" class="odd" v-for="dto in itemList" id="content"
                 style="cursor: pointer;" v-on:click="onRowClick(dto)">
                 <td>{{dto.id}}</td>
                 <td>{{dto.title}} [{{dto.reply_count}}]

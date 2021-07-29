@@ -8,28 +8,29 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <link rel="stylesheet" href="/lib/css/page/main.css">
 </head>
-<div th:replace="fragment/head :: head"></div>
+<div th:replace="fragment/common/head :: head"></div>
 <body>
-    <div th:fragment="main">
-        <!-- Navbar Start -->
-        <div th:replace="fragment/navbar :: navbar"></div>
-        <div id="writeRow_part" class="page-header">
-            <h1>전수 후기 백업 게시판</h1>
-            <h5>모든 내용은 2020년 12월 31일 기준입니다.</h5>
-        </div>
-        <!-- Info End -->
+    <!-- Navbar Start -->
+    <div th:replace="fragment/common/navbar :: navbar"></div>
+    <!-- Navbar End -->
 
-        <!-- PostBoard Start -->
-        <div th:include="pages/postBoard :: postBoard"></div>
-        <!-- PostBoard End -->
-
-        <!-- Search part Start -->
-        <div th:include="pages/searchPart :: searchPart"></div>
-        <!-- Search part End -->
-
-        <!-- Paging part Start -->
-        <div th:include="pages/pagingPart :: pagingPart"></div>
-        <!-- Paging part End -->
+    <!-- Info Start -->
+    <div id="writeRow_part" class="page-header">
+        <h1>전수 후기 백업 게시판</h1>
+        <h5>모든 내용은 2020년 12월 31일 기준입니다.</h5>
     </div>
+    <!-- Info End -->
+
+    <!-- ContentBoard Start -->
+    <div th:include="fragment/main/contentBoard :: contentBoard"></div>
+    <!-- ContentBoard End -->
+
+    <!-- Search part Start -->
+    <div th:include="fragment/main/searchPart :: searchPart"></div>
+    <!-- Search part End -->
+
+    <!-- Paging part Start -->
+    <div th:include="fragment/main/pagingPart :: pagingPart"></div>
+    <!-- Paging part End -->
     <script src="/app/boardStandard.js"></script>
 </body>

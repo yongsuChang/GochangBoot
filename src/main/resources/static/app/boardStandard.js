@@ -52,7 +52,7 @@
         methods: {
             onRowClick: function(dto){
                 var id = dto.id;
-                window.location.href='/readPostForm/'+id;
+                window.location.href='/content/'+id;
             }
         }
     });
