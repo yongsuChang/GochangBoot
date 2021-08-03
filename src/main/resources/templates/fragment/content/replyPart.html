@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/">
+
+<div id="reply_part" th:fragment="replyPart">
+    <ul id="replyPart">
+        <li id="replyContentBox" v-for="replyData in replyList" style="min-height: 100px; border:3px solid grey;" >
+            <p v-if='replyData.is_re_reply === "1"'
+               style="font-size:18px; color:teal; font-weight:bold;"><b>[대댓글]</b></p><br>
+            <p id="commentWriter">작성자:{{replyData.writer}}<br>
+                    작성일:{{replyData.write_date}}</p><br>
+            <p id="commentText" v-html="replyData.content"></p>
+            <hr style="background-color: rgb(248, 233, 27)">
+        </li>
+    </ul>
+</div>
+</html>

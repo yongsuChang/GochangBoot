@@ -63,7 +63,8 @@ public class ReplyApiLogicService extends BaseService<ReplyApiRequest, ReplyApiR
             .map(Content::getNumber)
             .orElseGet(() -> "0");
 
-        Page<Reply> replyPage = replyRepository.findAllByContentId(pageable, Long.valueOf(number));
+        Page<Reply> replyPage = replyRepository
+                .findAllByContentId(pageable, Long.valueOf(number));
         return PaginationUtils.getPaginationHeader(replyPage, this);
     }
 }

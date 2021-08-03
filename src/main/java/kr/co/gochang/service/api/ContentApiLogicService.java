@@ -102,13 +102,12 @@ public class ContentApiLogicService extends BaseService<ContentApiRequest, Conte
 
     public String getContentTitle(Long id){
         String contentTitle = baseRepository.findById(id)
-                .map(content -> {
-                    return content.getTitle();
-                })
+                .map(Content::getTitle)
                 .orElseGet(() -> null);
         if(contentTitle == null){
             return "게시물 없음";
         }
         return contentTitle;
     }
+
 }

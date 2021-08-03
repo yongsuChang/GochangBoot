@@ -22,13 +22,17 @@
         <div th:include="fragment/content/topPart :: topPart"></div>
         <!-- Top part End -->
 
-        <!-- Upper PrevNext part Start -->
+        <!-- PrevNext part Start -->
         <div th:include="fragment/content/prevNextPart :: prevNextPart(${prevTitle},${nextTitle})"></div>
-        <!-- Upper PrevNext part End -->
+        <!-- PrevNext part End -->
 
         <!-- Content Detail part Start -->
         <div th:include="fragment/content/contentDetailPart :: contentDetailPart"></div>
         <!-- Content Detail part End -->
+
+        <!-- Reply part Start -->
+        <div th:include="fragment/content/replyPart :: replyPart"></div>
+        <!-- Reply part End -->
 
     </div>
     <!-- Container End -->

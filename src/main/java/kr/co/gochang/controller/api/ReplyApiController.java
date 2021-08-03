@@ -21,7 +21,7 @@ public class ReplyApiController extends CrudController<ReplyApiRequest, ReplyApi
 
     @GetMapping("/byContent/{contentId}")
     public Header<List<ReplyApiResponse>> readReplyListByContentId(
-            @PageableDefault(sort="id", direction= Sort.Direction.DESC, size=15)
+            @PageableDefault(sort="indexInContent", direction= Sort.Direction.ASC, size=15)
                     Pageable pageable,
             @PathVariable(value = "contentId") Long contentId
     ){
