@@ -5,25 +5,23 @@
       xmlns:v-on="http://www.w3.org/1999/xhtml">
 
 <div id="prev_next" th:fragment="prevNextPart(prevTitle,nextTitle)">
-    <div id="prevNextPart" th:fragment="prevNextPart">
-        <div id="prev_page">
-            <a href="javascript:;" v-on:click="prevContentClick()" >
-                <p><b>
-                        <em class="link">« Prev </em>
-                        <span th:text="${prevTitle}"></span>
-                </b></p>
-            </a>
-        </div>
-        <div id="next_page">
-            <a href="javascript:;" v-on:click="nextContentClick()" >
-                <p>
-                    <b>
-                        <span th:text="${nextTitle}"></span>
-                        <em class="link"> Next »</em>
-                    </b>
-                </p>
-            </a>
-        </div>
+    <div class="prev_page">
+        <a href="javascript:;" v-on:click="prevContentClick()" >
+            <p><b>
+                <em class="link">« Prev </em>
+                <span th:text="${prevTitle}"></span>
+            </b></p>
+        </a>
+    </div>
+    <div class="next_page">
+        <a href="javascript:;" v-on:click="nextContentClick()" >
+            <p>
+                <b>
+                    <span th:text="${nextTitle}"></span>
+                    <em class="link"> Next »</em>
+                </b>
+            </p>
+        </a>
     </div>
 </div>
 </html>

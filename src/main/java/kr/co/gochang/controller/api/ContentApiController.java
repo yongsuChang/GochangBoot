@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/content")
+@RequestMapping("/api/contents")
 public class ContentApiController extends CrudController<ContentApiRequest, ContentApiResponse, Content> {
 
     @GetMapping("/search")

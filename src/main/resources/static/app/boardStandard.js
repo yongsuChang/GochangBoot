@@ -52,7 +52,7 @@
         methods: {
             onRowClick: function(dto){
                 var id = dto.id;
-                window.location.href='/content/'+id;
+                window.location.href='/contents/'+id;
             }
         }
     });
@@ -131,13 +131,13 @@
 
     function searchStart(index) {
         console.log("call index : "+index);
-        $.get("/api/content?page="+index+"&size="+elementPerPage,
+        $.get("/api/contents?page="+index+"&size="+elementPerPage,
             function (response) {searchContentsAndPaging(response)});
     }
 
     function searchDetail(index) {
         console.log("call index : "+index);
-        $.get("/api/content/search?page="+index+"&size="+elementPerPage
+        $.get("/api/contents/search?page="+index+"&size="+elementPerPage
                 +"&searchType="+searchType+"&searchWord="+searchWord,
             function (response) {searchContentsAndPaging(response)});
     }

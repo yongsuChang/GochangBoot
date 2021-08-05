@@ -86,11 +86,11 @@ min-height: 200px
 font-size : 15px;
 }
 
-#prev_page{
+.prev_page{
 float: left;
 }
 
-#next_page{
+.next_page{
 float: right;
 }
 

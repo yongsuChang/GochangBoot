@@ -2,20 +2,40 @@
     var currentContentIndex;
 
     var prevNextPart = new Vue({
-        el: '#prevNextPart',
+        el: '#upperPrevNextPart',
         methods :{
             prevContentClick: function(){
-                if(currentContentIndex != 327) {
-                    window.location.href='/content/' + (currentContentIndex + 1);
-                }
+                moveToPrev();
             },
             nextContentClick: function(){
-                if(currentContentIndex != 1) {
-                    window.location.href='/content/' + (currentContentIndex - 1);
-                }
+                moveToNext();
             }
         }
     });
+
+    var prevNextPart = new Vue({
+        el: '#lowerPrevNextPart',
+        methods :{
+            prevContentClick: function(){
+                moveToPrev();
+            },
+            nextContentClick: function(){
+                moveToNext();
+            }
+        }
+    });
+
+    function moveToPrev(){
+        if(currentContentIndex != 327) {
+            window.location.href='/contents/' + (currentContentIndex + 1);
+        }
+    }
+
+    function moveToNext(){
+        if(currentContentIndex != 1) {
+            window.location.href='/contents/' + (currentContentIndex - 1);
+        }
+    }
 
     var contentDetailPart = new Vue({
         el: '#contentDetailPart',
@@ -44,7 +64,7 @@
     });
 
     function getContentDetailByIndex(index){
-        $.get("/api/content/" + index, function(response){
+        $.get("/api/contents/" + index, function(response){
             contentDetailPart.contentDetail = response.data;
         });
     }

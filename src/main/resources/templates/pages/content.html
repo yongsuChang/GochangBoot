@@ -23,12 +23,16 @@
         <!-- Top part End -->
 
         <!-- PrevNext part Start -->
-        <div th:include="fragment/content/prevNextPart :: prevNextPart(${prevTitle},${nextTitle})"></div>
+        <div th:include="fragment/content/upperPrevNextPart :: upperPrevNextPart(${prevTitle},${nextTitle})"></div>
         <!-- PrevNext part End -->
 
         <!-- Content Detail part Start -->
         <div th:include="fragment/content/contentDetailPart :: contentDetailPart"></div>
         <!-- Content Detail part End -->
+
+        <!-- PrevNext part Start -->
+        <div th:include="fragment/content/lowerPrevNextPart :: lowerPrevNextPart(${prevTitle},${nextTitle})"></div>
+        <!-- PrevNext part End -->
 
         <!-- Reply part Start -->
         <div th:include="fragment/content/replyPart :: replyPart"></div>

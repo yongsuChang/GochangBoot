@@ -17,7 +17,7 @@ public class PageController {
         return new ModelAndView("/pages/main");
     }
 
-    @RequestMapping(value = "/content/{id}")
+    @RequestMapping(value = "/contents/{id}")
     public ModelAndView content(@PathVariable Long id){
         return new ModelAndView("/pages/content")
                 .addObject("prevTitle", contentApiLogicService.getContentTitle(id+1))
