@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+    <meta charset="UTF-8">
+    <title>전수후기 내용 읽기</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <link rel="stylesheet" href="/lib/css/page/content.css">
+</head>
+<div th:replace="fragment/common/head :: head"></div>
+<body>
+    <!-- Navbar Start -->
+    <div th:replace="fragment/common/navbar :: navbar"></div>
+    <!-- Navbar End -->
+
+    <!-- Container Start -->
+    <div class="grid-container">
+
+        <!-- Top part Start -->
+        <div th:include="fragment/content/topPart :: topPart"></div>
+        <!-- Top part End -->
+
+        <!-- PrevNext part Start -->
+        <div th:include="fragment/content/upperPrevNextPart :: upperPrevNextPart(${prevTitle},${nextTitle})"></div>
+        <!-- PrevNext part End -->
+
+        <!-- Content Detail part Start -->
+        <div th:include="fragment/content/contentDetailPart :: contentDetailPart"></div>
+        <!-- Content Detail part End -->
+
+        <!-- PrevNext part Start -->
+        <div th:include="fragment/content/lowerPrevNextPart :: lowerPrevNextPart(${prevTitle},${nextTitle})"></div>
+        <!-- PrevNext part End -->
+
+        <!-- Reply part Start -->
+        <div th:include="fragment/content/replyPart :: replyPart"></div>
+        <!-- Reply part End -->
+
+    </div>
+    <!-- Container End -->
+    <script src="/app/content.js"></script>
+</body>
+</html>

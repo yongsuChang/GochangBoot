@@ -1,13 +1,10 @@
 package kr.co.gochang.service.api;
 
-import java.util.List;
 import kr.co.gochang.model.entity.Content;
-import kr.co.gochang.model.entity.Reply;
 import kr.co.gochang.model.enumclass.SearchType;
 import kr.co.gochang.model.network.Header;
 import kr.co.gochang.model.network.request.ContentApiRequest;
 import kr.co.gochang.model.network.response.ContentApiResponse;
-import kr.co.gochang.model.network.response.ReplyApiResponse;
 import kr.co.gochang.repository.ContentRepository;
 import kr.co.gochang.repository.ReplyRepository;
 import kr.co.gochang.service.BaseService;
@@ -17,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ContentApiLogicService extends BaseService<ContentApiRequest, ContentApiResponse, Content> {
@@ -100,4 +99,15 @@ public class ContentApiLogicService extends BaseService<ContentApiRequest, Conte
         }
         return PaginationUtils.getPaginationHeader(contentPage, this);
     }
+
+    public String getContentTitle(Long id){
+        String contentTitle = baseRepository.findById(id)
+                .map(Content::getTitle)
+                .orElseGet(() -> null);
+        if(contentTitle == null){
+            return "게시물 없음";
+        }
+        return contentTitle;
+    }
+
 }

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<div id="upper_prev_next" th:fragment="upperPrevNextPart(prevTitle,nextTitle)">
+    <div id="upperPrevNextPart">
+        <div th:include="fragment/content/prevNextPart :: prevNextPart(${prevTitle}, ${nextTitle})"></div>
+    </div>
+</div>
+</html>

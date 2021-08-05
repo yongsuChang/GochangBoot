@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/content")
+@RequestMapping("/api/contents")
 public class ContentApiController extends CrudController<ContentApiRequest, ContentApiResponse, Content> {
 
     @GetMapping("/search")
@@ -22,9 +22,19 @@ public class ContentApiController extends CrudController<ContentApiRequest, Cont
             @PageableDefault(sort="id", direction= Sort.Direction.DESC, size=15)
                     Pageable pageable,
             // TODO: searchType으로 바꿀 것
-            @RequestParam(value = "searchTarget", defaultValue = "") String searchTarget,
+            @RequestParam(value = "searchType", defaultValue = "") String searchType,
             @RequestParam(value = "searchWord", defaultValue = "") String searchWord) {
         ContentApiLogicService contentApiLogicService = (ContentApiLogicService) baseService;
-        return contentApiLogicService.searchBoard(pageable, searchTarget, searchWord);
+        return contentApiLogicService.searchBoard(pageable, searchType, searchWord);
+    }
+
+    @GetMapping("/{id}/title")
+    public Header<String> getContentTitle(
+            @PathVariable Long id){
+        ContentApiResponse contentApiResponse = baseService.read(id).getData();
+        if(contentApiResponse == null){
+            return Header.OK("게시물 없음");
+        }
+        return Header.OK(contentApiResponse.getTitle());
     }
 }

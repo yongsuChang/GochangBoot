@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>고창 전수후기 백업 게시판</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <link rel="stylesheet" href="/lib/css/page/main.css">
+</head>
+<div th:replace="fragment/common/head :: head"></div>
+<body>
+    <!-- Navbar Start -->
+    <div th:replace="fragment/common/navbar :: navbar"></div>
+    <!-- Navbar End -->
+
+    <!-- Info Start -->
+    <div id="writeRow_part" class="page-header">
+        <h1>전수 후기 백업 게시판</h1>
+        <h5>모든 내용은 2020년 12월 31일 기준입니다.</h5>
+    </div>
+    <!-- Info End -->
+
+    <!-- ContentBoard Start -->
+    <div th:include="fragment/main/contentBoard :: contentBoard"></div>
+    <!-- ContentBoard End -->
+
+    <!-- Search part Start -->
+    <div th:include="fragment/main/searchPart :: searchPart"></div>
+    <!-- Search part End -->
+
+    <!-- Paging part Start -->
+    <div th:include="fragment/main/pagingPart :: pagingPart"></div>
+    <!-- Paging part End -->
+    <script src="/app/boardStandard.js"></script>
+</body>

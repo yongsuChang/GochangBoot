@@ -12,14 +12,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("api/replies")
 public class ReplyApiController extends CrudController<ReplyApiRequest, ReplyApiResponse, Reply> {
 
-    @GetMapping("api/content/{contentId}/replies")
+    @GetMapping("/byContent/{contentId}")
     public Header<List<ReplyApiResponse>> readReplyListByContentId(
-            @PageableDefault(sort="id", direction= Sort.Direction.DESC, size=15)
+            @PageableDefault(sort="indexInContent", direction= Sort.Direction.ASC, size=15)
                     Pageable pageable,
             @PathVariable(value = "contentId") Long contentId
     ){

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/">
+
+<div id="content_detail" th:fragment="contentDetailPart">
+    <!-- Content Detail Start -->
+    <div id="contentDetailPart" >
+        <!-- Content Detail Header Start -->
+        <div id="header_part" class="grid-contents">
+            <hr style="background-color: rgb(248, 233, 27)">
+            <!-- Content Title Start -->
+            <div>
+                <h3>{{contentDetail.title}}</h3>
+            </div>
+            <!-- Content Title End -->
+
+            <!-- Content Writer & WriteDate & Count, Recommend Start -->
+            <div>
+                <div id="nickname">{{contentDetail.writer}} &nbsp;&nbsp;{{contentDetail.write_date}}</div>
+
+                <span class="buttons"> </span>
+
+                <!-- 조회수, 추천수 -->
+                <span style="float: right; margin-right: 10px;">
+                            조회수:{{contentDetail.count}} &nbsp;&nbsp;
+                            추천수:{{contentDetail.recommend}} </span>
+            </div>
+            <!-- Content Writer & WriteDate & Count, Recommend End -->
+            <hr style="background-color: rgb(248, 233, 27)">
+
+        </div>
+        <!-- Content Detail Header End -->
+
+        <!-- Content Detail Content Start -->
+        <div id="paragraph_part" class="grid-contents">
+            <div id=text_paragraph style="margin-left: auto; margin-right: auto">
+                <p v-html='contentDetail.content'></p>
+            </div>
+        </div>
+        <!-- Content Detail Content End -->
+    </div>
+    <!-- Content Detail End -->
+</div>
+<script src="https://unpkg.com/vue"></script>
+</html>
