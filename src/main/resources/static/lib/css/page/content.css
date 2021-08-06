@@ -16,9 +16,10 @@ margin-right: 30px;
 }
 
 #writeRow_part{
+    padding-top : 1px;
+    padding-bottom : 1px;
 	padding-left : 30px;
-	margin-top : 31px;
-	margin-bottom : 15px;
+	margin-top : 86px;
 	background-color : gray;
 	grid-area: bar;
 }

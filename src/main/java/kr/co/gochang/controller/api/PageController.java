@@ -14,13 +14,14 @@ public class PageController {
 
     @RequestMapping(value = {"", "/main", "/search"})
     public ModelAndView main(){
-        return new ModelAndView("/pages/main");
+        return new ModelAndView("pages/main");
     }
 
     @RequestMapping(value = "/contents/{id}")
     public ModelAndView content(@PathVariable Long id){
-        return new ModelAndView("/pages/content")
+        return new ModelAndView("pages/content")
                 .addObject("prevTitle", contentApiLogicService.getContentTitle(id+1))
                 .addObject("nextTitle", contentApiLogicService.getContentTitle(id-1));
     }
+
 }
