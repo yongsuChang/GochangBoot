@@ -31,20 +31,24 @@ margin-right: 30px;
 #header_part{
 	grid-area : header;
 	padding-left : 30px;
+	padding-right : 30px;
 }
 
 #imgButton_part{
 	gird-area : imgButton;
 	padding-left : 30px;
+	padding-right : 30px;
 }
 #paragraph_part{
 	grid-area : paragraph;
 	padding-left : 30px;
+	padding-right : 30px;
 }
 
 #like_part{
 	grid-area : like;
 	padding-left : 30px;
+	padding-right : 30px;
 	padding-top: 20px;
 	padding-bottom: 20px;
 	background-color : #A9A9A9;
@@ -53,10 +57,12 @@ margin-right: 30px;
 	max-width: 1200px;
 	grid-area : commentDisplay;
 	padding-left : 30px;
+	padding-right : 30px;
 }
 #comment_part{
 	grid-area : comment;
 	padding-left : 30px;
+	padding-right : 30px;
 }
 /*grid 템플릿 설정*/
 .grid-container {
@@ -85,6 +91,10 @@ min-height: 200px
 
 #commentText{
 font-size : 15px;
+}
+
+#replyPart{
+	padding-right : 30px;
 }
 
 .prev_page{
