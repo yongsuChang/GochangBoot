@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -15,6 +16,7 @@ import javax.persistence.*;
 @Table(name = "content")
 @Builder
 @Accessors(chain = true)
+@Where(clause = "is_deleted = false")
 public class Content {
 
     @Id
@@ -49,4 +51,6 @@ public class Content {
     @Column(name = "picture")
     private String picture;
 
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted;
 }
