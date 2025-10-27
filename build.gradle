@@ -19,6 +19,9 @@ repositories {
 }
 
 dependencies {
+  // AWS Parameter Store
+  implementation 'io.awspring.cloud:spring-cloud-starter-aws-parameter-store-config:2.3.3'
+
 	// JDBC
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'mysql:mysql-connector-java'
