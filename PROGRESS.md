@@ -47,3 +47,40 @@ Thymeleaf 프래그먼트를 React 컴포넌트로 변환합니다.
 ## 시작 방법
 이 `PROGRESS.md` 파일의 체크리스트를 따라 하나씩 진행하면 됩니다.
 가장 먼저 React 프로젝트를 초기화하고 프록시를 설정하여 "Hello World"가 기존 API와 통신하는지 확인하는 것부터 시작하는 것을 추천합니다.
+
+## 6. CI/CD를 위한 Repository 분리 (2026-01-20)
+독립적인 배포 파이프라인 구성을 위해 Frontend를 별도 Repository로 분리했습니다.
+
+### Frontend Repository 분리
+- [x] **새 Repository 생성**: `/Users/chang-yongsu/git/GochangBoot-frontend`
+  - 기존 `frontend/` 디렉토리를 복사하여 새 repository 생성
+  - Git 초기화 및 초기 커밋 완료
+  - `.gitignore`, `.env.example`, `README.md` 추가
+
+### Backend Repository 정리
+- [x] **build.gradle 정리**:
+  - Node.js Gradle 플러그인 제거 (`com.github.node-gradle.node`)
+  - Frontend 빌드 태스크 제거 (`installFrontend`, `buildFrontend`, `copyFrontend`)
+  - `processResources` 의존성 제거
+- [x] **.gitignore 업데이트**: `frontend/` 디렉토리 제외 추가
+- [x] **CORS 설정 추가** (`WebConfig.java`):
+  - 로컬 개발: `http://localhost:5173`
+  - Cloudflare Pages: `https://*.pages.dev`
+
+### Frontend Production 설정
+- [x] **환경 변수 설정**:
+  - `.env.production.example` 생성
+  - `VITE_API_BASE_URL` 환경 변수 사용하도록 `useBoardData.js` 수정
+- [x] **API Endpoint 설정**:
+  - Development: Vite proxy 사용 (`/api` → `localhost:8080`)
+  - Production: 환경 변수로 Backend URL 지정
+
+### 배포 전략
+- **Backend**: GitHub Actions → AWS/서버 배포
+- **Frontend**: GitHub Actions → Cloudflare Pages 배포
+- 각 Repository가 독립적으로 빌드 및 배포됨
+
+### 다음 단계
+1. Frontend Repository를 GitHub에 Push
+2. Cloudflare Pages 연결 및 환경 변수 설정 (`VITE_API_BASE_URL`)
+3. Backend CI/CD 파이프라인 구성

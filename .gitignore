@@ -37,3 +37,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Frontend (now separate repository) ###
+frontend/
