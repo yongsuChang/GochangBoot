@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.5'
 	id 'java'
+	id 'com.github.node-gradle.node' version '7.0.2'
 }
 
 group = 'kr.co'
@@ -43,3 +44,38 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+// Node/pnpm configuration
+node {
+	version = '20.11.0'
+	pnpmVersion = '8.15.0'
+	download = true
+	workDir = file("${project.projectDir}/.gradle/nodejs")
+	pnpmWorkDir = file("${project.projectDir}/.gradle/pnpm")
+	nodeProjectDir = file("${project.projectDir}/frontend")
+}
+
+// Frontend tasks
+task installFrontend(type: com.github.gradle.node.pnpm.task.PnpmTask) {
+	args = ['install']
+	workingDir = file("${project.projectDir}/frontend")
+	dependsOn pnpmSetup
+}
+
+task buildFrontend(type: com.github.gradle.node.pnpm.task.PnpmTask) {
+	args = ['run', 'build']
+	workingDir = file("${project.projectDir}/frontend")
+	dependsOn installFrontend
+}
+
+task copyFrontend(type: Copy) {
+	from "${project.projectDir}/frontend/dist"
+	into "${project.buildDir}/resources/main/static"
+	dependsOn buildFrontend
+}
+
+// Integrate frontend build with Spring Boot build
+processResources {
+	dependsOn copyFrontend
+}
+

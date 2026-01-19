@@ -1,0 +1,14 @@
+23:48:05.831 [main] ERROR org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter -- 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Config data resource '[ParameterStoreConfigDataResource@4f0cab0a context = '/gochang/', optional = false]' via location 'aws-parameterstore:/gochang/' does not exist
+
+Action:
+
+Check that the value 'aws-parameterstore:/gochang/' at class path resource [application.properties] from gochang-0.0.1-SNAPSHOT.jar - 2:22 is correct, or prefix it with 'optional:'
+
