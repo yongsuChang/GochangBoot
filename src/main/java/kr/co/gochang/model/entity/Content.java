@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Table(name = "content")
 @Builder
 @Accessors(chain = true)
-@Where(clause = "is_deleted = false")
+@SQLRestriction("is_deleted = false")
 public class Content {
 
     @Id
