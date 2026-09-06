@@ -84,3 +84,17 @@ Thymeleaf 프래그먼트를 React 컴포넌트로 변환합니다.
 1. Frontend Repository를 GitHub에 Push
 2. Cloudflare Pages 연결 및 환경 변수 설정 (`VITE_API_BASE_URL`)
 3. Backend CI/CD 파이프라인 구성
+
+## 7. 1GB 서버용 경량화 (2026-09-06)
+서버(Lightsail 1GB, 스왑 0)와 NAS MySQL 왕복 지연을 없애기 위해 구조를 바꿨다. 자세한 절차는 `docs/OPERATIONS.md`.
+
+- [x] **DB 를 읽기 전용 H2 파일로**: 아카이브라 DB 서버 불필요. `migrate` 프로파일로 NAS MySQL → H2 1회 이전.
+- [x] **프론트를 같은 서버 nginx 로**: DuckDNS 는 CNAME 을 지원하지 않아 Cloudflare Pages 불가. 같은 출처가 되어 CORS 설정 제거.
+- [x] **성능**: 조회 전부 Caffeine 캐시, 목록 응답에서 본문 제외, gzip, 가상 스레드, 페이지 크기 상한, 댓글 조회 쿼리 1회로.
+- [x] **버그 수정**: 댓글 순번 문자열 정렬, 와일드카드 CORS 미매칭, DELETE 500, 빈 응답 쓰기 엔드포인트 제거, H2 없어서 실패하던 테스트.
+- [x] **정리**: Thymeleaf 템플릿/의존성, AWS Parameter Store, 제네릭 CRUD 추상화, nohup.out 제거. Boot 3.3.0 → 3.5.16.
+- [x] **배포 파일**: `deploy/nginx`, `deploy/systemd`, `.github/workflows/backend.yml`, 프론트용 워크플로 예시.
+- [ ] 서버 준비(스왑, JDK 21, nginx, systemd) 및 DB 파일 이전
+- [ ] GitHub secrets 등록 후 첫 배포
+- [x] 프론트 저장소: 상세 페이지(`/contents/:id`) React 로 구현, 앞뒤 글은 `/neighbors` API 사용, 옛 jQuery/Vue 스크립트 삭제 (커밋 전)
+- [ ] 프론트 저장소에 워크플로 적용 (`VITE_API_URL` 은 비워 둔다)
