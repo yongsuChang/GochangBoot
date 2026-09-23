@@ -1,0 +1,58 @@
+name: backend
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - run: ./gradlew --no-daemon test bootJar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gochang-jar
+          path: build/libs/gochang.jar
+          retention-days: 7
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: gochang-jar
+      # jar 만 올린다. 데이터(/opt/gochang/data)는 서버에 한 번 두는 것이고 배포가 건드리지 않는다.
+      - name: Upload jar
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: gochang.jar
+          target: /opt/gochang/incoming
+      - name: Swap jar and restart
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            mv /opt/gochang/incoming/gochang.jar /opt/gochang/gochang.jar
+            sudo systemctl restart gochang
+            for i in $(seq 1 30); do
+              curl -sf http://127.0.0.1:8080/actuator/health && exit 0
+              sleep 2
+            done
+            echo "health check failed" && sudo journalctl -u gochang -n 50 --no-pager && exit 1

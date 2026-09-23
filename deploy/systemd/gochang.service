@@ -1,0 +1,28 @@
+# /etc/systemd/system/gochang.service
+# 1GB 서버 기준 JVM 옵션. 힙 224MB + 메타스페이스 96MB 상한이면 RSS 약 250~300MB 에서 멈춘다.
+[Unit]
+Description=Gochang archive API
+After=network.target
+
+[Service]
+User=gochang
+WorkingDirectory=/opt/gochang
+Environment=GOCHANG_DB_PATH=/opt/gochang/data/gochang
+Environment=JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
+ExecStart=/usr/bin/java \
+    -Xms96m -Xmx224m \
+    -XX:+UseSerialGC \
+    -XX:MaxMetaspaceSize=96m \
+    -XX:ReservedCodeCacheSize=32m \
+    -XX:TieredStopAtLevel=1 \
+    -Xss512k \
+    -XX:+ExitOnOutOfMemoryError \
+    -jar /opt/gochang/gochang.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+# 배포 스크립트가 jar 를 바꿔치기한 뒤 restart 하므로 graceful shutdown 을 기다린다
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target
