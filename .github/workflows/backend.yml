@@ -33,23 +33,37 @@ jobs:
         with:
           name: gochang-jar
       # jar 만 올린다. 데이터(/opt/gochang/data)는 서버에 한 번 두는 것이고 배포가 건드리지 않는다.
+      # 도커 기반 scp 액션은 전송이 멈추면 무한 대기해서, 러너의 기본 ssh 를 keepalive/타임아웃/재시도와 함께 쓴다.
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          cat > ~/.ssh/config <<CFG
+          Host server
+            HostName ${{ secrets.SSH_HOST }}
+            User ${{ secrets.SSH_USER }}
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking accept-new
+            ConnectTimeout 15
+            ServerAliveInterval 10
+            ServerAliveCountMax 3
+          CFG
       - name: Upload jar
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: gochang.jar
-          target: /opt/gochang/incoming
+        timeout-minutes: 10
+        run: |
+          for i in 1 2 3; do
+            timeout 180 scp -C gochang.jar server:/opt/gochang/incoming/gochang.jar.part && exit 0
+            echo "upload attempt $i failed, retrying"; sleep 5
+          done
+          exit 1
       - name: Swap jar and restart
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            set -e
-            # /opt/gochang 은 gochang 소유라 배포 계정(ubuntu)은 sudo 로 옮긴다
+        timeout-minutes: 3
+        run: |
+          ssh server 'set -e
+            mv /opt/gochang/incoming/gochang.jar.part /opt/gochang/incoming/gochang.jar
+            # /opt/gochang 은 gochang 소유라 배포 계정은 sudo 로 옮긴다
             sudo install -o gochang -g gochang -m 644 /opt/gochang/incoming/gochang.jar /opt/gochang/gochang.jar
             rm /opt/gochang/incoming/gochang.jar
             sudo systemctl restart gochang
@@ -57,4 +71,4 @@ jobs:
               curl -sf http://127.0.0.1:8080/actuator/health && exit 0
               sleep 2
             done
-            echo "health check failed" && sudo journalctl -u gochang -n 50 --no-pager && exit 1
+            echo "health check failed"; sudo journalctl -u gochang -n 50 --no-pager; exit 1'
