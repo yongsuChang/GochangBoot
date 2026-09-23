@@ -1,4 +1,4 @@
-package kr.co.gochang.api.dto;
+package kr.co.gochang.dto.response;
 
 import org.springframework.data.domain.Page;
 

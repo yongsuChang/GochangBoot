@@ -1,5 +1,6 @@
-package kr.co.gochang.domain;
+package kr.co.gochang.repository;
 
+import kr.co.gochang.domain.Reply;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

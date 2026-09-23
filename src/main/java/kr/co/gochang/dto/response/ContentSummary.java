@@ -1,4 +1,4 @@
-package kr.co.gochang.api.dto;
+package kr.co.gochang.dto.response;
 
 /** 목록용. 본문은 싣지 않는다 (목록 화면은 본문을 쓰지 않는다). */
 public record ContentSummary(

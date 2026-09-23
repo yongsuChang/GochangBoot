@@ -1,7 +1,7 @@
-package kr.co.gochang.api;
+package kr.co.gochang.controller;
 
-import kr.co.gochang.api.dto.ApiResponse;
-import kr.co.gochang.api.dto.ReplyResponse;
+import kr.co.gochang.dto.response.ApiResponse;
+import kr.co.gochang.dto.response.ReplyResponse;
 import kr.co.gochang.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
