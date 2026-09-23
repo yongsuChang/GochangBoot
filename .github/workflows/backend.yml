@@ -49,7 +49,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             set -e
-            mv /opt/gochang/incoming/gochang.jar /opt/gochang/gochang.jar
+            # /opt/gochang 은 gochang 소유라 배포 계정(ubuntu)은 sudo 로 옮긴다
+            sudo install -o gochang -g gochang -m 644 /opt/gochang/incoming/gochang.jar /opt/gochang/gochang.jar
+            rm /opt/gochang/incoming/gochang.jar
             sudo systemctl restart gochang
             for i in $(seq 1 30); do
               curl -sf http://127.0.0.1:8080/actuator/health && exit 0
