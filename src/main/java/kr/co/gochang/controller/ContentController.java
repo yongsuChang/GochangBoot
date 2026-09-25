@@ -1,10 +1,10 @@
-package kr.co.gochang.api;
+package kr.co.gochang.controller;
 
-import kr.co.gochang.api.dto.ApiResponse;
-import kr.co.gochang.api.dto.ContentDetail;
-import kr.co.gochang.api.dto.ContentSummary;
-import kr.co.gochang.api.dto.Neighbors;
 import kr.co.gochang.domain.SearchType;
+import kr.co.gochang.dto.response.ApiResponse;
+import kr.co.gochang.dto.response.ContentDetail;
+import kr.co.gochang.dto.response.ContentSummary;
+import kr.co.gochang.dto.response.Neighbors;
 import kr.co.gochang.service.ContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

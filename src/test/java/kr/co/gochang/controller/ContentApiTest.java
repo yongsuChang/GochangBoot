@@ -1,4 +1,4 @@
-package kr.co.gochang.api;
+package kr.co.gochang.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,7 @@
-package kr.co.gochang.domain;
+package kr.co.gochang.repository;
 
-import kr.co.gochang.api.dto.ContentSummary;
+import kr.co.gochang.domain.Content;
+import kr.co.gochang.dto.response.ContentSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
 
-    String SUMMARY = "select new kr.co.gochang.api.dto.ContentSummary("
+    String SUMMARY = "select new kr.co.gochang.dto.response.ContentSummary("
             + "c.id, c.number, c.title, c.writeDate, c.writer, c.count, c.recommend, c.replyCount, c.picture) "
             + "from Content c ";
 

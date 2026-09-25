@@ -1,4 +1,4 @@
-package kr.co.gochang.api.dto;
+package kr.co.gochang.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,6 @@
-package kr.co.gochang.api;
+package kr.co.gochang.exception;
 
-import kr.co.gochang.api.dto.ApiResponse;
+import kr.co.gochang.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -14,7 +14,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 /** 예상 못 한 오류도 HTML 이 아니라 JSON 봉투로 내려준다. */
 @Slf4j
 @RestControllerAdvice
-public class ApiExceptionHandler {
+public class GlobalExceptionHandler {
 
     /** 잘못된 sort 속성, 숫자가 아닌 id 등. InvalidDataAccessApiUsageException 은 @Query 에 없는 sort 속성이 붙었을 때다. */
     @ExceptionHandler({PropertyReferenceException.class, MethodArgumentTypeMismatchException.class,
