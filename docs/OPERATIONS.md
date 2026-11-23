@@ -5,14 +5,15 @@
 ```
 브라우저 ──HTTPS──▶ nginx (gochang-visitor.duckdns.org, Oracle Cloud 1GB)
                      ├─ /        → /var/www/gochang  (React 빌드, 프론트 저장소)
-                     └─ /api/**  → 127.0.0.1:8080    (Spring Boot, systemd `gochang`)
-                                      └─ /opt/gochang/data/gochang.mv.db  (읽기 전용 H2 파일)
+                     └─ /api/**  → 127.0.0.1:8080    (Spring Boot, Podman 컨테이너 `gochang`)
+                                      └─ /opt/gochang/data/gochang.mv.db  (읽기 전용 H2 파일, 읽기 전용 마운트)
 ```
 
 - 데이터는 더 이상 바뀌지 않는 아카이브다. DB 서버 없이 H2 파일 하나를 읽기 전용으로 연다.
 - DB 파일은 **배포 산출물이 아니다.** 서버에 한 번 두고, 배포는 jar 와 프론트 정적 파일만 바꾼다.
 - 저장소가 public 이므로 DB 파일과 덤프는 어떤 형태로도 커밋하지 않는다 (`.gitignore` 의 `data/`, `*.mv.db`).
-- 원본 백업(MySQL 덤프와 H2 파일 사본)은 Synology NAS 에 둔다.
+- 서버의 H2 파일이 유일한 원본이다. 다시 만들 방법이 없으므로 사본을 서버 밖 한 곳 이상에 보관한다.
+- 외부 DB, 외부 저장소와의 연결은 없다. 서버 한 대로 완결된다.
 
 ### 서버 현황
 
@@ -21,8 +22,10 @@
 | 호스트 | Oracle Cloud, Ubuntu 24.04, x86-64, 2 vCPU, 메모리 1GB |
 | 스왑 | `/mnt/swapfile` 1GB |
 | 접속 | `ssh Oracle` (ubuntu, 비밀번호 없는 sudo) |
-| JDK | openjdk-21-jre-headless |
-| 앱 | `/opt/gochang/gochang.jar` (소유 gochang), systemd `gochang` |
+| 런타임 | Podman (rootful, Quadlet). 호스트에 JDK 는 없다 |
+| 이미지 | `docker.io/library/eclipse-temurin:21-jre` (Java 21), `podman-auto-update.timer` 로 패치 자동 반영 |
+| 앱 | `/opt/gochang/gochang.jar` 를 컨테이너에 읽기 전용으로 마운트. systemd `gochang` (= `/etc/containers/systemd/gochang.container`) |
+| 포트 | 컨테이너 8080 → 호스트 `127.0.0.1:8080` 만. 외부에는 nginx 80/443 만 열려 있다 |
 | 데이터 | `/opt/gochang/data/gochang.mv.db` (소유 gochang) |
 | 업로드 임시 폴더 | `/opt/gochang/incoming` (소유 ubuntu) |
 | 프론트 | `/var/www/gochang` (소유 ubuntu) |
@@ -36,7 +39,7 @@ sudo fallocate -l 1G /mnt/swapfile && sudo chmod 600 /mnt/swapfile
 sudo mkswap /mnt/swapfile && sudo swapon /mnt/swapfile
 echo '/mnt/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-sudo apt install -y openjdk-21-jre-headless nginx
+sudo apt install -y podman nginx
 sudo useradd -r -s /usr/sbin/nologin -d /opt/gochang gochang
 sudo mkdir -p /opt/gochang/{data,incoming} /var/www/gochang
 sudo chown -R gochang:gochang /opt/gochang
@@ -46,56 +49,51 @@ sudo chown -R ubuntu:ubuntu /opt/gochang/incoming /var/www/gochang
 서버에는 저장소가 없으므로 설정 파일은 로컬에서 올린다.
 
 ```bash
-scp deploy/systemd/gochang.service deploy/nginx/gochang.conf Oracle:/opt/gochang/incoming/
+scp deploy/podman/gochang.container deploy/nginx/gochang.conf Oracle:/opt/gochang/incoming/
 ```
 
 서버에서 적용한다. nginx 백업은 반드시 `sites-enabled/` **밖에** 둔다. 안에 두면 nginx 가 백업까지 읽어서 upstream 중복 오류가 난다.
 
 ```bash
-sudo mv /opt/gochang/incoming/gochang.service /etc/systemd/system/
+sudo install -D -m 644 /opt/gochang/incoming/gochang.container /etc/containers/systemd/gochang.container
+rm /opt/gochang/incoming/gochang.container
 sudo cp /etc/nginx/sites-enabled/default /etc/nginx/default.bak
 sudo mv /opt/gochang/incoming/gochang.conf /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
-sudo systemctl daemon-reload && sudo systemctl enable gochang
+sudo systemctl daemon-reload                       # Quadlet 이 gochang.service 를 만든다 (enable 은 필요 없다)
+sudo systemctl enable --now podman-auto-update.timer
+```
+
+기존에 `/etc/systemd/system/gochang.service` 가 있으면 지워야 한다. 남아 있으면 Quadlet 이 만든 유닛보다 우선한다.
+(2026-11-18 전환 때의 옛 유닛은 서버의 `/etc/systemd/gochang.service.host-jvm.bak` 에 있다.)
+
+```bash
+sudo systemctl start gochang
 ```
 
 인증서가 없는 새 도메인이면 nginx 설정 교체 **전에** `sudo certbot certonly --nginx -d <도메인>` 으로 먼저 받는다.
 설정 파일이 인증서 경로를 참조하므로, 인증서가 없으면 `nginx -t` 가 실패한다.
 
-## 2. MySQL → H2 파일 이전 (한 번, 완료됨)
+## 2. 데이터 파일 배치 (새 서버에 처음 세팅할 때만)
 
-NAS 의 MariaDB 에 접근할 수 있는 PC(집)에서 실행한다. 웹 서버는 뜨지 않고, 복사만 하고 끝난다.
-
-```bash
-./gradlew bootJar
-MYSQL_URL='jdbc:mysql://<NAS-IP>:3307/<DB명>?useUnicode=true&characterEncoding=utf8' \
-MYSQL_USER='<계정>' MYSQL_PASSWORD='<비밀번호>' \
-GOCHANG_DB_PATH=./data/gochang \
-java -jar build/libs/gochang.jar --spring.profiles.active=migrate
-```
-
-- Synology 의 MariaDB 10 은 기본 포트가 **3307** 이다. 3306 으로 시도하면 `Connection refused` 가 난다.
-- 성공하면 로그에 `원본 MySQL: content N건` 과 `이전 완료` 가 찍히고 파일이 수 MB 가 된다 (2020년 기준 게시글 327, 댓글 240, 약 2.5MB).
-- 실패하면 빈 H2 파일을 지우고 마지막에 `이전 실패: <원인>` 을 크게 찍는다. 원본이 0건이어도 실패로 처리한다.
-- 숫자로 바꿀 수 없는 값(`content.number`, `reply.indexincontent`, `reply.contentid`)은 NULL 로 넣고 WARN 을 남긴다.
-- 대상 파일에 이미 데이터가 있으면 중단한다. 다시 하려면 `data/gochang.mv.db` 를 지운다.
-
-서버로 올리고, NAS 에도 사본을 둔다.
+보관해 둔 `gochang.mv.db` 사본을 서버에 올린다. jar 가 먼저 있어야 서비스가 뜬다 (3장의 수동 배포 참고).
 
 ```bash
 scp data/gochang.mv.db Oracle:/opt/gochang/incoming/
-ssh Oracle 'sudo systemctl stop gochang \
-  && sudo install -o gochang -g gochang -m 644 /opt/gochang/incoming/gochang.mv.db /opt/gochang/data/gochang.mv.db \
+ssh Oracle 'sudo systemctl stop gochang; \
+  sudo install -o gochang -g gochang -m 644 /opt/gochang/incoming/gochang.mv.db /opt/gochang/data/gochang.mv.db \
   && rm /opt/gochang/incoming/gochang.mv.db && sudo systemctl start gochang'
 ```
 
-이후 NAS 의 MariaDB 는 내려도 되고, 외부에 열린 3307 포트는 닫는다.
+- 파일은 2020년 기준 게시글 327, 댓글 240, 약 2.5MB 다. 0건이거나 수십 KB 면 빈 파일이다.
+- 컨테이너는 루트가 아닌 계정(10001)으로 돌므로 jar 와 DB 파일은 누구나 읽을 수 있어야 한다 (`644`, 디렉터리 `755`).
 
 ## 3. 배포
 
 ### 백엔드 (GitHub Actions, `.github/workflows/backend.yml`)
 
 `master` 에 push 하면 테스트 → jar 빌드 → 서버로 업로드 → `systemctl restart` → 헬스체크까지 자동으로 한다.
+서버에서 이미지를 빌드하지 않는다. 컨테이너는 JRE 이미지에 jar 를 마운트해서 쓰므로, jar 를 바꾸고 재시작하면 끝이다.
 업로드는 러너의 기본 `scp` 를 keepalive, 타임아웃, 3회 재시도와 함께 쓴다 (도커 기반 scp 액션은 전송이 멈추면 무한 대기했다).
 
 Repository secrets (등록 완료): `SSH_HOST`, `SSH_USER`, `SSH_KEY`
@@ -142,15 +140,26 @@ GOCHANG_DB_PATH=./data/gochang java -jar build/libs/gochang.jar
 
 프론트는 `pnpm dev` 로 띄우면 Vite 가 `/api` 를 `localhost:8080` 으로 프록시한다.
 
+운영과 같은 컨테이너 구성으로 띄워 보려면 (Docker 나 Podman):
+
+```bash
+./gradlew bootJar
+docker run --rm --read-only --tmpfs /tmp --user 10001:10001 -p 127.0.0.1:8080:8080 \
+  -v "$PWD/build/libs/gochang.jar:/app/gochang.jar:ro" -v "$PWD/data:/data:ro" \
+  -e GOCHANG_DB_PATH=/data/gochang eclipse-temurin:21-jre java -jar /app/gochang.jar
+```
+
 ## 5. 메모리 예산 (1GB 서버)
 
 | 항목 | 예상 |
 |---|---|
 | JVM (힙 224MB 상한, Serial GC) | 약 250MB (실데이터로 측정 245MB) |
+| Podman (conmon, 네트워크) | 수 MB. 상주 데몬이 없다 |
 | nginx | 약 10MB |
 | OS 등 | 약 150MB |
 
-JVM 이 OOM 이면 `-XX:+ExitOnOutOfMemoryError` 로 즉시 죽고, systemd 가 5초 뒤 다시 올린다.
+JVM 옵션은 `deploy/podman/gochang.container` 의 `Exec=` 에 있다.
+JVM 이 OOM 이면 `-XX:+ExitOnOutOfMemoryError` 로 즉시 죽고, systemd 가 5초 뒤 컨테이너를 다시 올린다.
 캐시(`spring.cache.caffeine.spec`)는 항목 1000개, 6시간 동안 안 쓰이면 제거한다. 힙이 부족하면 이 값부터 줄인다.
 
 ## 6. 문제 해결
@@ -160,6 +169,10 @@ JVM 이 OOM 이면 `-XX:+ExitOnOutOfMemoryError` 로 즉시 죽고, systemd 가 
 | 사이트 루트가 403 | `/var/www/gochang` 이 비어 있다. 프론트를 올린다 |
 | API 가 0건 | 서버의 `gochang.mv.db` 가 빈 파일이다. 로컬에서 건수를 확인하고 다시 올린다 |
 | 서비스가 안 뜬다 | `sudo journalctl -u gochang -n 50`. DB 파일이 없으면 `IFEXISTS=TRUE` 때문에 즉시 실패한다 |
+| `gochang.service` 가 없다고 나온다 | Quadlet 파일 문법 오류. `sudo /usr/lib/systemd/system-generators/podman-system-generator --dryrun` |
+| 컨테이너 안에서 `BindException: Permission denied` | 유닛에 `NoNewPrivileges=true` 를 넣으면 Ubuntu 24.04 의 AppArmor 가 소켓 생성을 막는다. 넣지 않는다 |
+| 컨테이너 상태 확인 | `sudo podman ps`, `sudo podman logs gochang`, JRE 버전은 `sudo podman exec gochang java -version` |
+| JRE 이미지를 지금 갱신 | `sudo podman auto-update` (새 이미지가 있으면 받아서 재시작) |
 | 8080 포트 충돌 | 옛 프로세스가 남아 있다. `sudo ss -ltnp \| grep 8080` |
 | 배포 잡이 멈춤/실패 | Actions 로그의 Upload jar / Swap jar 단계, 서버 `ls /opt/gochang/incoming` |
 

@@ -1,4 +1,4 @@
--- H2 스키마. 컬럼명은 원본 MySQL 과 같고, 정렬/조인에 쓰이는 컬럼만 숫자 타입으로 바꿨다.
+-- H2 스키마. 컬럼명은 크롤링 원본 테이블과 같고, 정렬/조인에 쓰이는 컬럼만 숫자 타입이다.
 CREATE TABLE IF NOT EXISTS content (
     id          BIGINT PRIMARY KEY,
     number      BIGINT,

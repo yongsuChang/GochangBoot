@@ -102,4 +102,11 @@ Thymeleaf 프래그먼트를 React 컴포넌트로 변환합니다.
 - [x] **패키지 정리**: controller / service / repository / domain / dto / exception / config 계층형 구조로 (PR #3).
 - [x] **프론트 저장소**: 상세 페이지(`/contents/:id`) React 로 구현, 앞뒤 글은 `/neighbors` API 사용, 옛 jQuery/Vue 스크립트 삭제.
 - [ ] 프론트 배포 자동화 (지금은 `pnpm build` 후 scp 수동. 필요하면 `deploy/frontend-deploy.example.yml` 적용)
-- [ ] NAS MariaDB 종료 및 3307 포트 닫기, 원본 덤프와 H2 파일 사본 NAS 보관
+
+## 8. 컨테이너 전환, NAS 연결 제거 (2026-11-17)
+- [x] **이전 도구 삭제**: `migrate` 프로파일, `MysqlToH2Migrator`, MySQL 드라이버 의존성. 운영은 이미 H2 파일만 읽고 있었다.
+- [x] **Podman Quadlet 유닛**: `deploy/podman/gochang.container`. 공식 JRE 21 이미지에 jar 와 데이터를 읽기 전용으로 마운트, `127.0.0.1:8080` 만 공개. 배포 워크플로는 그대로.
+- [x] **서버 전환 (11-18)**: Podman 4.9.3 설치, 유닛 교체, 중단 약 40초. `NoNewPrivileges` 는 AppArmor 와 충돌해 제외.
+- [ ] 호스트 JDK(21, 11) 패키지 제거, 옛 유닛 백업(`/etc/systemd/gochang.service.host-jvm.bak`) 삭제
+- [ ] NAS MariaDB 종료 및 외부에 열린 3307 포트 닫기 (NAS 쪽 작업)
+- [ ] H2 파일 사본 보관 위치 정하기

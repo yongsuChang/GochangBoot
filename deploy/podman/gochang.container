@@ -1,0 +1,54 @@
+# /etc/containers/systemd/gochang.container  (Podman Quadlet)
+# systemd 가 이 파일에서 gochang.service 를 만들어 준다. 그래서 운영 명령은 그대로다:
+#   sudo systemctl restart gochang / sudo journalctl -u gochang
+# 이미지는 JRE 만 들어 있는 공식 이미지를 그대로 쓰고, jar 와 데이터는 호스트에서 읽기 전용으로 붙인다.
+# 서버에서 이미지를 빌드하지 않으므로 배포는 jar 를 바꾸고 restart 하는 것이 전부다.
+[Unit]
+Description=Gochang archive API (container)
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=gochang
+Image=docker.io/library/eclipse-temurin:21-jre
+# podman-auto-update.timer 가 새 JRE 패치 이미지를 받으면 컨테이너를 다시 띄운다
+AutoUpdate=registry
+
+# 호스트에는 127.0.0.1 로만 연다. 외부에서는 nginx 의 /api/ 로만 들어올 수 있다.
+PublishPort=127.0.0.1:8080:8080
+
+Volume=/opt/gochang/gochang.jar:/app/gochang.jar:ro
+Volume=/opt/gochang/data:/data:ro
+Environment=GOCHANG_DB_PATH=/data/gochang
+Environment=JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
+
+# 루트가 아닌 계정, 읽기 전용 루트 파일시스템(/tmp 만 tmpfs), 권한 전부 제거
+# NoNewPrivileges 는 넣지 않는다. Ubuntu 24.04 에서는 AppArmor 프로파일 전환이 막혀 소켓 생성이
+# Permission denied 로 실패한다 (dmesg 에 apparmor="DENIED" profile="crun").
+User=10001:10001
+ReadOnly=true
+DropCapability=ALL
+# graceful shutdown(10초)을 기다린 뒤에 강제 종료한다
+PodmanArgs=--stop-timeout=20
+
+# 1GB 서버 기준 JVM 옵션. 힙 224MB + 메타스페이스 96MB 상한이면 RSS 약 250~300MB 에서 멈춘다.
+Exec=java \
+    -Xms96m -Xmx224m \
+    -XX:+UseSerialGC \
+    -XX:MaxMetaspaceSize=96m \
+    -XX:ReservedCodeCacheSize=32m \
+    -XX:TieredStopAtLevel=1 \
+    -Xss512k \
+    -XX:+ExitOnOutOfMemoryError \
+    -jar /app/gochang.jar
+
+[Service]
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+# 첫 기동은 이미지를 내려받느라 오래 걸릴 수 있다
+TimeoutStartSec=300
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
