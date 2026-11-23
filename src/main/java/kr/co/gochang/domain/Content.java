@@ -12,7 +12,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 /**
  * 크롤링해 온 원본 게시글. 아카이브라 절대 바뀌지 않으므로 읽기 전용 엔티티다.
- * 컬럼명은 원본 MySQL 테이블과 동일하게 유지해서 이전 작업을 단순하게 한다.
+ * 컬럼명은 크롤링 원본 테이블과 동일하다.
  */
 @Getter
 @Immutable

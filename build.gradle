@@ -32,8 +32,6 @@ dependencies {
 
 	// 운영 DB: 읽기 전용 H2 파일 (data/ 는 git 에 올리지 않는다)
 	runtimeOnly 'com.h2database:h2'
-	// migrate 프로파일에서만 사용: NAS MySQL -> H2 파일 1회 이전
-	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
